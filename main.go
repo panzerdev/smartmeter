@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"log"
+	"net"
 	"net/http"
 	"os"
 	"os/signal"
@@ -15,6 +16,8 @@ import (
 )
 
 var (
+	httpPort = flag.String("http-port", "8080", "Port for http server serving prometheus endpoint")
+
 	flagPersistence = flag.String("persist", "none", "type of persistence: [none, postgres]")
 
 	dbHost        = flag.String("db-host", "localhost", "Db host")
@@ -63,7 +66,7 @@ func main() {
 
 	go func() {
 		// Start server for serving prometheus
-		log.Fatalln(http.ListenAndServe(":8080", nil))
+		log.Fatalln(http.ListenAndServe(net.JoinHostPort("", *httpPort), nil))
 	}()
 
 	go func() {

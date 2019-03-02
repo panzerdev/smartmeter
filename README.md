@@ -37,6 +37,7 @@ Usage of ./smartmeter:
       --db-password string   Db password (default "root")
       --db-port string       Db port (default "5432")
       --db-user string       Db user (default "postgres")
+      --http-port string     Port for http server serving prometheus endpoint (default "8080")
       --persist string       type of persistence: [none, postgres] (default "none")
       --reader-port string   Device name of reader (default "/dev/ttyUSB0")
 ```
