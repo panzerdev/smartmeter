@@ -83,6 +83,7 @@ func parseObis(msg []string) (Measurement, error) {
 
 	measurement := Measurement{
 		Created: time.Now(),
+		MeterID: 1, // use a real id if you have more then 1 meter
 	}
 
 	for _, v := range msg {
