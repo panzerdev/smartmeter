@@ -1,0 +1,12 @@
+[Unit]
+Description=SmartMeter
+After=multi-user.target
+
+[Service]
+TimeoutStartSec=0
+Restart=always
+RestartSec=5
+ExecStart=/usr/bin/smartmeter
+
+[Install]
+WantedBy=multi-user.target
