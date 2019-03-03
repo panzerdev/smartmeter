@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"sort"
+	"time"
 
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
@@ -66,6 +67,7 @@ func NewPostgresWriter(conf PostgresConfig) *PostgresWriter {
 }
 
 func (p *PostgresWriter) Flush(measurements []Measurement) error {
+	t := time.Now()
 	// TODO flush to DB and write to retry chan on error
 
 	sort.Slice(measurements, func(i, j int) bool {
@@ -99,5 +101,7 @@ func (p *PostgresWriter) Flush(measurements []Measurement) error {
 		go func() { p.retryC <- measurements }()
 		return err
 	}
+
+	log.Printf("PostgresWriter: Flushed %v items to db in %v\n", len(measurements), time.Since(t))
 	return nil
 }
