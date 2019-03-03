@@ -15,6 +15,8 @@ import (
 	"go.bug.st/serial.v1"
 )
 
+var gitSha = ""
+
 var (
 	httpPort = flag.String("http-port", "8080", "Port for http server serving prometheus endpoint")
 
@@ -36,7 +38,7 @@ var (
 )
 
 func main() {
-	log.Println("Starting... ")
+	log.Println("Starting Version:", gitSha)
 	flag.Parse()
 	flag.VisitAll(func(f *flag.Flag) {
 		log.Println("Flag:", f.Name, f.DefValue, f.Value, ":::", f.Usage)
@@ -124,7 +126,6 @@ func startCollector(ctx context.Context, persister MeasurementPersister) {
 
 			measurements = []Measurement{}
 		case <-ctx.Done():
-			// TODO needed if flush call in sync?
 			err := persister.Flush(measurements)
 			if err != nil {
 				log.Println(err)
