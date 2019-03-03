@@ -85,6 +85,7 @@ func (p *PostgresWriter) Flush(measurements []Measurement) error {
 		if err != nil {
 			return err
 		}
+		defer insert.Close()
 
 		for _, m := range measurements {
 			_, err := insert.Exec(m)
