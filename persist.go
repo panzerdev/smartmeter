@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/pkg/errors"
 	"log"
 	"sort"
 	"time"
@@ -67,6 +68,10 @@ func NewPostgresWriter(conf PostgresConfig) *PostgresWriter {
 }
 
 func (p *PostgresWriter) Flush(measurements []Measurement) error {
+	if len(measurements) == 0 {
+		return errors.New("No data in slice to flush")
+	}
+
 	t := time.Now()
 	// TODO flush to DB and write to retry chan on error
 
