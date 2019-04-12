@@ -108,6 +108,8 @@ func startCollector(ctx context.Context, persister MeasurementPersister) {
 	defer ticker.Stop()
 
 	for {
+		flushBuffer.Set(float64(len(measurements)))
+
 		select {
 		case m := <-collector:
 			measurements = append(measurements, m)

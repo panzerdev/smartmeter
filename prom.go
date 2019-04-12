@@ -8,11 +8,12 @@ import (
 )
 
 var (
-	voltage    *prometheus.GaugeVec
-	power      *prometheus.GaugeVec
-	totalPower prometheus.Gauge
-	total      prometheus.Gauge
-	flushTime  prometheus.Summary
+	voltage     *prometheus.GaugeVec
+	power       *prometheus.GaugeVec
+	totalPower  prometheus.Gauge
+	total       prometheus.Gauge
+	flushTime   prometheus.Summary
+	flushBuffer prometheus.Gauge
 )
 
 const (
@@ -64,11 +65,17 @@ func initProm() {
 		Help: "Duration for flushing to DB",
 	})
 
+	flushBuffer = prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "smart_meter_persister_flush_buffer",
+		Help: "Curent items waitng for flushing",
+	})
+
 	prometheus.MustRegister(voltage)
 	prometheus.MustRegister(power)
 	prometheus.MustRegister(total)
 	prometheus.MustRegister(totalPower)
 	prometheus.MustRegister(flushTime)
+	prometheus.MustRegister(flushBuffer)
 
 	http.Handle("/metrics", promhttp.Handler())
 }
