@@ -12,7 +12,7 @@ var (
 	power      *prometheus.GaugeVec
 	totalPower prometheus.Gauge
 	total      prometheus.Gauge
-	flushTime  prometheus.Histogram
+	flushTime  prometheus.Summary
 )
 
 const (
@@ -59,7 +59,7 @@ func initProm() {
 			Obis: OBIScodePt},
 	})
 
-	flushTime = prometheus.NewHistogram(prometheus.HistogramOpts{
+	flushTime = prometheus.NewSummary(prometheus.SummaryOpts{
 		Name: "smart_meter_persister_flush_duration",
 		Help: "Duration for flushing to DB",
 	})
