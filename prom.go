@@ -12,6 +12,7 @@ var (
 	power      *prometheus.GaugeVec
 	totalPower prometheus.Gauge
 	total      prometheus.Gauge
+	flushTime  prometheus.Histogram
 )
 
 const (
@@ -58,10 +59,16 @@ func initProm() {
 			Obis: OBIScodePt},
 	})
 
+	flushTime = prometheus.NewHistogram(prometheus.HistogramOpts{
+		Name: "smart_meter_persister_flush_duration",
+		Help: "Duration for flushing to DB",
+	})
+
 	prometheus.MustRegister(voltage)
 	prometheus.MustRegister(power)
 	prometheus.MustRegister(total)
 	prometheus.MustRegister(totalPower)
+	prometheus.MustRegister(flushTime)
 
 	http.Handle("/metrics", promhttp.Handler())
 }

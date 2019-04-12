@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/pkg/errors"
+	"github.com/prometheus/client_golang/prometheus"
 	"log"
 	"sort"
 	"time"
@@ -71,6 +72,9 @@ func (p *PostgresWriter) Flush(measurements []Measurement) error {
 	if len(measurements) == 0 {
 		return errors.New("No data in slice to flush")
 	}
+
+	observer := prometheus.NewTimer(flushTime)
+	defer observer.ObserveDuration()
 
 	t := time.Now()
 	// TODO flush to DB and write to retry chan on error

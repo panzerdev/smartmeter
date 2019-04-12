@@ -119,6 +119,7 @@ func startCollector(ctx context.Context, persister MeasurementPersister) {
 				defer wg.Done()
 				err := persister.Flush(m)
 				if err != nil {
+					// TODO add len of slice to error output
 					log.Println(err)
 					return
 				}
