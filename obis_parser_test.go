@@ -20,6 +20,9 @@ const singleValidMsg = `
 1-0:0.0.0*255(1EBZ0100183277)
 1-0:96.1.0*255(1EBZ0100183277)
 1-0:1.8.0*255(002236.29107286*kWh)
+1-0:1.8.1*255(001236.29107286*kWh)
+1-0:1.8.2*255(002136.29107286*kWh)
+1-0:2.8.0*255(002130.29107286*kWh)
 1-0:16.7.0*255(000550.25*W)
 1-0:36.7.0*255(000322.14*W)
 1-0:56.7.0*255(000052.55*W)
@@ -42,7 +45,10 @@ func TestObisParser_ParseValid(t *testing.T) {
 
 	parser.Parse(bytes.NewReader([]byte(singleValidMsg)), func(measurement Measurement, err error) {
 		as.NoError(err)
-		as.Equal(2236.29107286, measurement.TotalKwh)
+		as.Equal(2130.29107286, measurement.TotalKwhNeg)
+		as.Equal(2236.29107286, measurement.TotalKwhPos)
+		as.Equal(1236.29107286, measurement.TotalT1KwhPos)
+		as.Equal(2136.29107286, measurement.TotalT2KwhPos)
 		as.Equal(550.25, measurement.PTotal)
 		as.Equal(322.14, measurement.P1)
 		as.Equal(52.55, measurement.P2)

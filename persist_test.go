@@ -14,16 +14,19 @@ func TestPostgresWriter_Flush(t *testing.T) {
 	createdAt := time.Now()
 	for i := 0; i < 100; i++ {
 		m = append(m, Measurement{
-			Created:  createdAt.Add(time.Microsecond * time.Duration(i)),
-			MeterID:  meterId,
-			TotalKwh: rand.Float64(),
-			PTotal:   rand.Float64(),
-			P1:       rand.Float64(),
-			P2:       rand.Float64(),
-			P3:       rand.Float64(),
-			V1:       rand.Float64(),
-			V2:       rand.Float64(),
-			V3:       rand.Float64(),
+			Created:       createdAt.Add(time.Microsecond * time.Duration(i)),
+			MeterID:       meterId,
+			TotalKwhNeg:   rand.Float64(),
+			TotalKwhPos:   rand.Float64(),
+			TotalT1KwhPos: rand.Float64(),
+			TotalT2KwhPos: rand.Float64(),
+			PTotal:        rand.Float64(),
+			P1:            rand.Float64(),
+			P2:            rand.Float64(),
+			P3:            rand.Float64(),
+			V1:            rand.Float64(),
+			V2:            rand.Float64(),
+			V3:            rand.Float64(),
 		})
 	}
 

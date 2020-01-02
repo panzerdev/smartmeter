@@ -19,15 +19,20 @@ const (
 )
 
 const (
-	OBISMsgSeparator = "!"
-	OBIScodeCurrent  = "1-0:1.8.0*255"  // 2248.01818051 kWh
-	OBIScodePt       = "1-0:16.7.0*255" // 282.03 W
-	OBIScodeP1       = "1-0:36.7.0*255" // 63.33 W
-	OBIScodeP2       = "1-0:56.7.0*255" // 30.14 W
-	OBIScodeP3       = "1-0:76.7.0*255" // 188.56 W
-	OBIScodeV1       = "1-0:32.7.0*255" // 233.8 V
-	OBIScodeV2       = "1-0:52.7.0*255" // 236.1 V
-	OBIScodeV3       = "1-0:72.7.0*255" // 235.1 V
+	OBISMsgSeparator                 = "!"
+	OBIScodeTotalConsumptionPositive = "1-0:1.8.0*255"  // 2248.01818051 kWh
+	OBIScodeT1ConsumptionPositive    = "1-0:1.8.1*255"  // 2248.01818051 kWh
+	OBIScodeT2ConsumptionPositive    = "1-0:1.8.2*255"  // 2248.01818051 kWh
+	OBIScodeTotalConsumptionNegative = "1-0:2.8.0*255"  // 2248.01818051 kWh
+	OBIScodeT1ConsumptionNegative    = "1-0:2.8.1*255"  // 2248.01818051 kWh not used yet
+	OBIScodeT2ConsumptionNegative    = "1-0:2.8.2*255"  // 2248.01818051 kWh not used yet
+	OBIScodePt                       = "1-0:16.7.0*255" // 282.03 W
+	OBIScodeP1                       = "1-0:36.7.0*255" // 63.33 W
+	OBIScodeP2                       = "1-0:56.7.0*255" // 30.14 W
+	OBIScodeP3                       = "1-0:76.7.0*255" // 188.56 W
+	OBIScodeV1                       = "1-0:32.7.0*255" // 233.8 V
+	OBIScodeV2                       = "1-0:52.7.0*255" // 236.1 V
+	OBIScodeV3                       = "1-0:72.7.0*255" // 235.1 V
 )
 
 var (
@@ -77,8 +82,8 @@ func (parser ObisParser) Parse(reader io.Reader, mp MeasurementProcessor) {
 }
 
 func parseObis(msg []string) (Measurement, error) {
-	if len(msg) != 12 {
-		return Measurement{}, errors.Errorf("\nReading has only size %v of 12:\n%v", len(msg), strings.Join(msg, "\n"))
+	if len(msg) < 12 {
+		return Measurement{}, errors.Errorf("\nReading too short %v:\n%v", len(msg), strings.Join(msg, "\n"))
 	}
 
 	measurement := Measurement{
@@ -110,8 +115,14 @@ func parseObis(msg []string) (Measurement, error) {
 
 func mapValues(obis string, value float64, m *Measurement) {
 	switch obis {
-	case OBIScodeCurrent:
-		m.TotalKwh = value
+	case OBIScodeTotalConsumptionNegative:
+		m.TotalKwhNeg = value
+	case OBIScodeTotalConsumptionPositive:
+		m.TotalKwhPos = value
+	case OBIScodeT1ConsumptionPositive:
+		m.TotalT1KwhPos = value
+	case OBIScodeT2ConsumptionPositive:
+		m.TotalT2KwhPos = value
 	case OBIScodePt:
 		m.PTotal = value
 	case OBIScodeP1:

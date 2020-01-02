@@ -33,7 +33,10 @@ type PostgresWriter struct {
 //	CREATE TABLE meter_data (
 //		created_at 	timestamp PRIMARY KEY NOT NULL,
 //		meter_id 	integer NOT NULL,
-//		total_kwh 	decimal NOT NULL,
+//		total_kwh_neg 	decimal NOT NULL,
+//		total_kwh_pos 	decimal NOT NULL,
+//		total_kwh_t1_pos 	decimal NOT NULL,
+//		total_kwh_t2_pos 	decimal NOT NULL,
 //		total_p 	decimal NOT NULL,
 //		p1 			decimal NOT NULL,
 //		p2 			decimal NOT NULL,
@@ -43,8 +46,8 @@ type PostgresWriter struct {
 //		v3 			decimal NOT NULL
 //	);
 
-const insert_meter_data = `INSERT INTO meter_data( created_at, meter_id, total_kwh, total_p, p1, p2, p3, v1, v2, v3) 
-								VALUES(:created_at, :meter_id, :total_kwh, :total_p, :p1, :p2, :p3, :v1, :v2, :v3);`
+const insert_meter_data = `INSERT INTO meter_data( created_at, meter_id, total_kwh_neg, total_kwh_pos, total_kwh_t1_pos, total_kwh_t2_pos, total_p, p1, p2, p3, v1, v2, v3) 
+											VALUES(:created_at, :meter_id, :total_kwh_neg, :total_kwh_pos, :total_kwh_t1_pos, :total_kwh_t2_pos, :total_p, :p1, :p2, :p3, :v1, :v2, :v3);`
 
 type PostgresConfig struct {
 	User     string

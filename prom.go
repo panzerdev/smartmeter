@@ -11,7 +11,7 @@ var (
 	voltage     *prometheus.GaugeVec
 	power       *prometheus.GaugeVec
 	totalPower  prometheus.Gauge
-	total       prometheus.Gauge
+	consumption *prometheus.GaugeVec
 	flushTime   prometheus.Summary
 	flushBuffer prometheus.Gauge
 )
@@ -44,12 +44,16 @@ func initProm() {
 		Obis,
 	})
 
-	total = prometheus.NewGauge(prometheus.GaugeOpts{
-		Name: "smart_meter_current_total_reading",
+	consumption = prometheus.NewGaugeVec(prometheus.GaugeOpts{
+		Name: "smart_meter_current_total_consumption",
 		Help: "Current total value ",
 		ConstLabels: prometheus.Labels{
 			Unit: "kWh",
-			Obis: OBIScodeCurrent},
+		},
+	}, []string{
+		Obis,
+		"type",
+		"counter",
 	})
 
 	totalPower = prometheus.NewGauge(prometheus.GaugeOpts{
@@ -72,7 +76,7 @@ func initProm() {
 
 	prometheus.MustRegister(voltage)
 	prometheus.MustRegister(power)
-	prometheus.MustRegister(total)
+	prometheus.MustRegister(consumption)
 	prometheus.MustRegister(totalPower)
 	prometheus.MustRegister(flushTime)
 	prometheus.MustRegister(flushBuffer)
@@ -81,7 +85,10 @@ func initProm() {
 }
 
 func meter(m Measurement) {
-	total.Set(m.TotalKwh)
+	consumption.WithLabelValues(OBIScodeTotalConsumptionNegative, "negative", "total").Set(m.TotalKwhNeg)
+	consumption.WithLabelValues(OBIScodeTotalConsumptionPositive, "positive", "total").Set(m.TotalKwhPos)
+	consumption.WithLabelValues(OBIScodeT1ConsumptionPositive, "positive", "t1").Set(m.TotalT1KwhPos)
+	consumption.WithLabelValues(OBIScodeT2ConsumptionPositive, "positive", "t2").Set(m.TotalT2KwhPos)
 	totalPower.Set(m.PTotal)
 	power.WithLabelValues("all", OBIScodePt).Set(m.PTotal)
 	power.WithLabelValues("1", OBIScodeP1).Set(m.P1)
